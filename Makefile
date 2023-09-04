@@ -8,7 +8,9 @@ LIBFT_LIB	=	libft.a
 
 HEADER		=	ft_traceroute.h
 SRC			=	ft_traceroute.c \
-				parse.c
+				parse.c \
+				socket.c \
+				traceroute_loop.c
 
 OBJ_DIR		=	obj
 OBJ			=	$(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))

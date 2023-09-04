@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 13:29:13 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/09/04 20:06:28 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/09/04 22:33:00 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,22 @@ static void	print_help(void)
 static void	init(t_tr* tr)
 {
 	tr->destination == NULL;
+	tr->destination_ip[0] = '\0';
+
+	tr->ai = NULL;
+	tr->sasend = NULL;
+	tr->sarecv = NULL;
+	tr->salast = NULL;
+	tr->sabind = NULL;
+	tr->salen = 0;
+	tr->icmpproto = IPPROTO_ICMP;
+	tr->ttllevel = IPPROTO_IP;
+	tr->ttloptname = IP_TTL;
+
+	tr->sendfd = 0;
+	tr->recvfd = 0;
+
+	tr->sport = 0;
 	tr->first_ttl = 1;
 	tr->max_ttl = 30;
 	tr->no_dns = false;
@@ -50,7 +66,7 @@ static void	parse_print(t_tr* tr)
 	printf("first_ttl      = \t%ld\n", tr->first_ttl);
 	printf("max_ttl        = \t%ld\n", tr->max_ttl);
 	printf("no_dns         = \t%d\n", tr->no_dns);
-	printf("dport          = \t%ld\n", tr->dport);
+	printf("dport          = \t%d\n", tr->dport);
 	printf("nprobes        = \t%ld\n", tr->nprobes);
 	printf("verbose        = \t%d\n", tr->verbose);
 	printf("-----------------------------------------\n");
