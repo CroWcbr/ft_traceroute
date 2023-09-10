@@ -14,7 +14,6 @@ make your own traceroute
 	- -n                 Do not resolve IP addresses to their domain names
 	- -p <count>         Set the destination port to use.
 	- -q <count>         Set the number of probes per each hop. Default is 3
-	- -v                 verbose output
 
 ## Clone of project
 - git clone --recursive ....this_project

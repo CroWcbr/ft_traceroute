@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 13:29:13 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/09/04 22:33:00 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/09/10 22:18:23 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,17 @@ static void	print_help(void)
 	printf("  -n                 Do not resolve IP addresses to their domain names\n");
 	printf("  -p <count>         Set the destination port to use.\n");
 	printf("  -q <count>         Set the number of probes per each hop. Default is 3\n");
-	printf("  -v                 verbose output\n");
 	printf("  <destination>      dns name or ip address\n");
+}
+
+static void	print_version(void)
+{
+	printf("Cdarrell best version!\n");
 }
 
 static void	init(t_tr* tr)
 {
-	tr->destination == NULL;
+	tr->destination = NULL;
 	tr->destination_ip[0] = '\0';
 
 	tr->ai = NULL;
@@ -49,6 +53,8 @@ static void	init(t_tr* tr)
 
 	tr->sendfd = 0;
 	tr->recvfd = 0;
+	tr->timeout.tv_sec = 1;
+	tr->timeout.tv_usec = 0;
 
 	tr->sport = 0;
 	tr->first_ttl = 1;
@@ -56,7 +62,6 @@ static void	init(t_tr* tr)
 	tr->no_dns = false;
 	tr->dport = 33434;
 	tr->nprobes = 3;
-	tr->verbose = false;
 }
 
 static void	parse_print(t_tr* tr)
@@ -68,7 +73,6 @@ static void	parse_print(t_tr* tr)
 	printf("no_dns         = \t%d\n", tr->no_dns);
 	printf("dport          = \t%d\n", tr->dport);
 	printf("nprobes        = \t%ld\n", tr->nprobes);
-	printf("verbose        = \t%d\n", tr->verbose);
 	printf("-----------------------------------------\n");
 }
 
@@ -94,25 +98,11 @@ static size_t	find_int(char *opt, char flag)
 static void	check_input(t_tr *tr)
 {
 	if (tr->max_ttl > 255)
-	{
-		printf("ft_traceroute : max hops cannot be more than 255\n");
-		exit(1);
-	}
-	else if (tr->first_ttl > tr->max_ttl)
-	{
-		printf("ft_traceroute : first hop out of range\n");
-		exit(1);
-	}
-	else if (tr->dport > 65535)
-	{
-		printf("ft_traceroute : port cannot be more than 65535\n");
-		exit(1);
-	}
-	else if (tr->nprobes > 10)
-	{
-		printf("ft_traceroute : no more than 10 probes per hop\n");
-		exit(1);
-	}
+		ft_exit("ft_traceroute : max hops cannot be more than 255\n");
+	else if (tr->first_ttl > tr->max_ttl || tr->first_ttl == 0 || tr->max_ttl == 0)
+		ft_exit("ft_traceroute : first hop out of range\n");
+	else if (tr->nprobes > 10 || tr->nprobes == 0)
+		ft_exit("ft_traceroute : no more than 10 probes per hop\n");
 }
 
 void	parse(int argc, char **argv, t_tr* tr)
@@ -129,12 +119,12 @@ void	parse(int argc, char **argv, t_tr* tr)
 	{
 		if (argv[i][0] == '-' && argv[i][1] != '\0')
 		{
-			if (!ft_strcmp(*argv, "--version"))
+			if (!ft_strcmp(argv[i], "--version"))
 			{
-				printf("Cdarrell best version!\n");
+				print_version();
 				exit (0);
 			}
-			else if (!ft_strcmp(*argv, "--help"))
+			else if (!ft_strcmp(argv[i], "--help"))
 			{
 				print_help();
 				exit (0);
@@ -148,11 +138,6 @@ void	parse(int argc, char **argv, t_tr* tr)
 					if (flag == 'n' && ++j)
 					{
 						tr->no_dns = true;
-						continue;
-					}
-					else if (flag == 'v' && ++j)
-					{
-						tr->verbose = true;
 						continue;
 					}
 					else if (flag == 'f' && ((!argv[i][j + 1] && argv[i][2]) || (j == 1 && argv[i + 1])))

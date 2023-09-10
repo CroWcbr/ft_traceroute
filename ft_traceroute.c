@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 19:28:54 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/09/05 00:04:24 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/09/10 18:41:55 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,7 @@ static void _signal_handler(int signal)
 int main(int argc, char **argv)
 {
 	if (getuid() != 0)
-	{
-		printf("ft_traceroute: usage error: You must be root to run this program\n");
-		exit(1);
-	}
+		ft_exit("ft_traceroute: usage error: You must be root to run this program\n");
 
 	t_tr	tr;
 	parse(argc, argv, &tr);
@@ -47,5 +44,9 @@ int main(int argc, char **argv)
 
 	traceroute_loop(&tr);
 
+	freeaddrinfo(tr.ai);
+	free(tr.sarecv);
+	free(tr.salast);
+	free(tr.sabind);
 	return 0;
 }

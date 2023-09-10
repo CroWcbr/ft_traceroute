@@ -1,7 +1,7 @@
 NAME		=	ft_traceroute
 
 CC			=	gcc
-FLAGS		=	#-Wall -Wextra -Werror
+FLAGS		=	-Wall -Wextra -Werror
 
 LIBFT_DIR	=	./external//libft
 LIBFT_LIB	=	libft.a
@@ -10,7 +10,9 @@ HEADER		=	ft_traceroute.h
 SRC			=	ft_traceroute.c \
 				parse.c \
 				socket.c \
-				traceroute_loop.c
+				traceroute_loop.c \
+				recieve_package.c \
+				ft_exit.c
 
 OBJ_DIR		=	obj
 OBJ			=	$(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
