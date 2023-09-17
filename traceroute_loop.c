@@ -6,7 +6,7 @@
 /*   By: cdarrell <cdarrell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 00:04:52 by cdarrell          #+#    #+#             */
-/*   Updated: 2023/09/10 22:22:57 by cdarrell         ###   ########.fr       */
+/*   Updated: 2023/09/17 22:48:48 by cdarrell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void traceroute_loop(t_tr *tr)
 				printf(" *");
 			else
 			{
-				char	str[NI_MAXHOST];
+
 				if (tr->sarecv->sa_family != tr->salast->sa_family || \
 						ft_memcmp( &((struct sockaddr_in *) tr->sarecv)->sin_addr, &((struct sockaddr_in *) tr->salast)->sin_addr, sizeof(struct in_addr)))
 				{
@@ -99,8 +99,14 @@ void traceroute_loop(t_tr *tr)
 					if (!inet_ntop(AF_INET, &((struct sockaddr_in *)tr->sarecv)->sin_addr, str_dest, sizeof(str_dest)))
 						ft_exit("ft_traceroute : error inet_ntop in middle_destination\n");
 
-					if (!tr->no_dns && getnameinfo(tr->sarecv, tr->salen, str, sizeof(str), NULL, 0, 0) == 0)
-						printf(" %s (%s)", str, str_dest);
+					if (!tr->no_dns)
+					{
+						char	str[NI_MAXHOST];
+						if (getnameinfo(tr->sarecv, tr->salen, str, sizeof(str), NULL, 0, 0) == 0)
+							printf(" %s (%s)", str, str_dest);
+						else
+							printf(" %s (%s)", str_dest, str_dest);
+					}
 					else
 						printf(" %s", str_dest);
 					ft_memcpy(tr->salast, tr->sarecv, tr->salen);
